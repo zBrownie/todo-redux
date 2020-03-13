@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   
-
+  align-self:center;
   input{
       height: 42px;
 
@@ -11,6 +11,8 @@ export const Container = styled.div`
 
     border: 1px solid #00000022;  
     border-right-width:0;
+
+    padding: 0 16px;
   }
 
   button{

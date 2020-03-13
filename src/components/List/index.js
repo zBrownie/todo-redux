@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Container, ListaTarefas } from './styles';
 
+import {MdArrowBack,MdDelete,MdDone} from 'react-icons/md'
+
 export default function List({ tasks, action, deleteTask }) {
   return (
     <Container>
@@ -15,9 +17,9 @@ export default function List({ tasks, action, deleteTask }) {
 
             </div>
             <button onClick={() => action(tarefa.id)}>{
-              tarefa.completed ? 'Voltar' : 'Feito'
+              tarefa.completed ? <MdArrowBack size={24}/> : <MdDone size={24}/>
             }</button>
-            <button onClick={() => deleteTask(tarefa.id)}>DEL</button>
+            <button onClick={() => deleteTask(tarefa.id)}><MdDelete size={24}/></button>
           </ListaTarefas>)
         }
       </ul>
