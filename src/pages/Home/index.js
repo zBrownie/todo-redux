@@ -1,72 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import api from "../../service/api";
 
-import { Container } from './styles';
-import { useDispatch, useSelector } from 'react-redux'
-import Field from '../../components/Field';
-import List from '../../components/List';
+import { Container } from "./styles";
+import { useDispatch, useSelector } from "react-redux";
+import Field from "../../components/Field";
+import List from "../../components/List";
 
-import { InsertTask, UpdateTask, DeleteTask } from '../../redux/actions'
+import { InsertTask, UpdateTask, DeleteTask } from "../../redux/actions";
 
 export default function Home() {
+  const tasks = useSelector(state => state.tasks);
+  const user = useSelector(state => state.userinfo);
+  const dispatch = useDispatch();
 
-    const [taskState, settaskState] = useState([]);
+  //   const [taskState, settaskState] = useState([tasks]);
 
-    const tasks = useSelector(state => state.tasks)
-    const dispatch = useDispatch()
+  async function handleGetTasks() {
+    await api.get("/").then(response => {
+      dispatch(InsertTask(response.data));
+      console.log("dispatch");
+    });
+  }
 
+  useEffect(() => {
+    handleGetTasks();
+  }, []);
 
-    function handleSubmit(newTask) {
-        let dataJson = {
-            'id': Math.floor(Math.random() * 9999),
-            'task': newTask,
-            'completed': false
-        }
-
-        // taskState.push(dataJson)
-
-        dispatch(InsertTask(dataJson))
+  async function handleSubmit(newTask) {
+    if (Object.keys(user).length === 0) {
+      alert("Logar Primeiro!");
     }
+    
+    await api
+      .post("/task", { task: newTask, userID: user._id })
+      .finally(promise => {
+        handleGetTasks();
+      });
+    // dispatch(InsertTask(''))
+  }
 
-    function handleCompleteTask(id) {
-        let taskArray = Array.from(tasks)
-        let selectedTask = taskArray.filter(task => task.id === id)
-        selectedTask[0].completed = !selectedTask[0].completed;
-        settaskState(taskArray)
+  function handleCompleteTask(id) {
+    let taskArray = Array.from(tasks);
+    let selectedTask = taskArray.filter(task => task.id === id);
+    selectedTask[0].completed = !selectedTask[0].completed;
+    // settaskState(taskArray);
 
-        dispatch(UpdateTask(taskArray))
-    }
+    dispatch(UpdateTask(taskArray));
+  }
 
-    function handleDeleteTask(id) {
-        console.log(id)
+  async function handleDeleteTask(id) {
+    await api.delete("/task", id).finally(promise => {
+      handleGetTasks();
+    });
+  }
 
-        let tempArray = Array.from(tasks)
-
-        tempArray.map(task => {
-            if (task.id == id) {
-                let index = tempArray.indexOf(task)
-
-                tempArray.splice(index, 1)
-            }
-        })
-        // settaskState(tempArray)
-
-        dispatch(DeleteTask(tempArray))
-    }
-
-    useEffect(() => {
-        setTimeout(
-            () => {
-                settaskState(tasks)
-            }, 1000
-        )
-
-
-    }, [tasks]);
-
-    return (
-        <Container>
-            <Field newTask={handleSubmit} />
-            <List tasks={taskState} action={handleCompleteTask} deleteTask={handleDeleteTask} />
-        </Container>
-    );
+  return (
+    <Container>
+      <Field newTask={handleSubmit} />
+      <List
+        tasks={tasks}
+        action={handleCompleteTask}
+        deleteTask={handleDeleteTask}
+      />
+    </Container>
+  );
 }

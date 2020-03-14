@@ -8,9 +8,6 @@ export const Container = styled.div`
     grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
     gap:20px;
   }
-
-  
-
 `;
 
 
@@ -24,8 +21,8 @@ export const ListaTarefas = styled.li`
   border: 1px solid #000000;
   box-shadow: 10px 10px 30px rgba(0,0,0,0.1);
   border-radius:5px;
+ 
   button{
-
       border:0;
       background:transparent;
       margin: 8px 12px;

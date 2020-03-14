@@ -18,3 +18,17 @@ export function DeleteTask(newTask){
         payload: newTask
     }
 }
+
+export function GetToken(token){
+    return {
+        type: 'GET_TOKEN',
+        payload: token
+    }
+}
+
+export function GetUser(user){
+    return {
+        type: 'GET_USER',
+        payload: user
+    }
+}
