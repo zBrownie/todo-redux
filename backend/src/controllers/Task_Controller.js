@@ -23,13 +23,15 @@ module.exports = {
     return response.json(newTask);
   },
   async delete(request, response) {
-    const { _id } = request.body;
-    const task = TaskModel.deleteOne({ _id }, (err, resp) => {
+    const { taskid } = request.params;
+
+    // const task = TaskModel.deleteOne({ _id }, (err, resp) => {
+    //   if (err) console.log(err);
+    // });
+
+    const task = await TaskModel.findOneAndDelete({ _id: taskid }, function(err) {
       if (err) console.log(err);
     });
-    // const task = await TaskModel.findById({ _id });
-
-    // await TaskModel.deleteOne(task);
 
     return response.status(200).send({ task, message: "task deletada" });
   },

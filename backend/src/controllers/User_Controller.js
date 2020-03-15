@@ -18,18 +18,19 @@ module.exports = {
     return response.json(users);
   },
   async store(request, response) {
-    const { name, email, password, admin } = request.body;
+    const { email, password } = request.body;
 
     let user = await User.findOne({ email });
 
     if (!user) {
       const hash = await bcrypt.hash(password, 10);
 
+      let name = email.split("@", 2);
+
       user = await User.create({
-        name,
+        name: name[0],
         email,
-        password: hash,
-        admin
+        password: hash
       });
     }
 

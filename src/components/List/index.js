@@ -1,8 +1,8 @@
 import React from "react";
-import api from "../../service/api";
+// import api from "../../service/api";
 import { Container, ListaTarefas } from "./styles";
 
-import { MdArrowBack, MdDelete, MdDone,MdPlayArrow } from "react-icons/md";
+import { MdArrowBack, MdDelete, MdDone } from "react-icons/md";
 
 export default function List({ tasks, action, deleteTask }) {
   return (

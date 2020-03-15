@@ -7,7 +7,7 @@ const routes = Router();
 
 routes.get("/", TaskController.index);
 routes.post("/task", TaskController.store);
-routes.delete('/task',TaskController.delete);
+routes.delete('/task/:taskid',TaskController.delete);
 routes.put('/task',TaskController.update);
 
 routes.get("/user",UserController.index);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import api from "../../service/api";
 import { Container } from "./styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { GetUser, GetToken } from "../../redux/actions";
 
 export default function Header() {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.token);
+  // const token = useSelector(state => state.token);
   const user = useSelector(state => state.userinfo);
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -22,9 +22,20 @@ export default function Header() {
     });
   }
 
-  async function handleLogout(){
-    dispatch(GetToken(''));
-      dispatch(GetUser({}));
+  async function handleLogout() {
+    dispatch(GetToken(""));
+    dispatch(GetUser({}));
+  }
+
+  async function handleRegister() {
+    let data = {
+      email,
+      password
+    };
+    await api.post("/user", data).then(response => {
+      dispatch(GetToken(response.data.token));
+      dispatch(GetUser(response.data.user));
+    });
   }
 
   return (
@@ -45,6 +56,7 @@ export default function Header() {
             onChange={e => setpassword(e.target.value)}
           />
           <button onClick={handleLogin}>Entrar</button>
+          <button onClick={handleRegister}>Register</button>
         </div>
       ) : (
         <div className="usuario">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import api from "../../service/api";
 
 import { Container } from "./styles";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Field from "../../components/Field";
 import List from "../../components/List";
 
-import { InsertTask, UpdateTask, DeleteTask } from "../../redux/actions";
+import { InsertTask } from "../../redux/actions";
 
 export default function Home() {
   const tasks = useSelector(state => state.tasks);
@@ -21,6 +21,7 @@ export default function Home() {
 
   useEffect(() => {
     handleGetTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(newTask) {
@@ -64,13 +65,8 @@ export default function Home() {
       alert("Logar Primeiro!");
     }
 
-    const data = {
-      _id: id
-    };
-
-    console.log(data)
     await api
-      .delete("/task", data)
+      .delete(`/task/${id}`)
       .then(response => {
         console.log(response);
       })
