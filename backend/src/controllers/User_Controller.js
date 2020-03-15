@@ -3,14 +3,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 function generateToken(params = {}) {
-  return jwt.sign(params, '086bec6f119951c2a07358deb5991a3e', {
+  return jwt.sign(params, "086bec6f119951c2a07358deb5991a3e", {
     expiresIn: 10000000 // 3 MONTHS
   });
 }
 
 module.exports = {
   async index(request, response) {
-    const users = await User.find();
+    const { userID } = request.body;
+    const users = await User.findOne({ userID });
 
     users.password = undefined;
 

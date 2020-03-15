@@ -13,12 +13,9 @@ export default function Home() {
   const user = useSelector(state => state.userinfo);
   const dispatch = useDispatch();
 
-  //   const [taskState, settaskState] = useState([tasks]);
-
   async function handleGetTasks() {
     await api.get("/").then(response => {
       dispatch(InsertTask(response.data));
-      console.log("dispatch");
     });
   }
 
@@ -30,28 +27,56 @@ export default function Home() {
     if (Object.keys(user).length === 0) {
       alert("Logar Primeiro!");
     }
-    
+
     await api
-      .post("/task", { task: newTask, userID: user._id })
+      .post("/task", { task: newTask, userName: user.name })
       .finally(promise => {
         handleGetTasks();
       });
-    // dispatch(InsertTask(''))
   }
 
-  function handleCompleteTask(id) {
-    let taskArray = Array.from(tasks);
-    let selectedTask = taskArray.filter(task => task.id === id);
-    selectedTask[0].completed = !selectedTask[0].completed;
-    // settaskState(taskArray);
+  async function handleCompleteTask(id) {
+    if (Object.keys(user).length === 0) {
+      alert("Logar Primeiro!");
+    }
+    let data = {
+      _id: id,
+      userdoing: user.name,
+      completed: 1
+    };
+    await api
+      .put("/task", data)
+      .then(response => {
+        console.log(response);
+      })
+      .finally(promise => {
+        handleGetTasks();
+      });
+    // let taskArray = Array.from(tasks);
+    // let selectedTask = taskArray.filter(task => task.id === id);
+    // selectedTask[0].completed = !selectedTask[0].completed;
 
-    dispatch(UpdateTask(taskArray));
+    // dispatch(UpdateTask(taskArray));
   }
 
   async function handleDeleteTask(id) {
-    await api.delete("/task", id).finally(promise => {
-      handleGetTasks();
-    });
+    if (Object.keys(user).length === 0) {
+      alert("Logar Primeiro!");
+    }
+
+    const data = {
+      _id: id
+    };
+
+    console.log(data)
+    await api
+      .delete("/task", data)
+      .then(response => {
+        console.log(response);
+      })
+      .finally(promise => {
+        handleGetTasks();
+      });
   }
 
   return (

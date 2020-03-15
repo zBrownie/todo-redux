@@ -7,7 +7,7 @@ module.exports = {
     return response.json(tasks);
   },
   async store(request, response) {
-    const { task, userID } = request.body;
+    const { task, userName } = request.body;
 
     let newTask = await TaskModel.findOne({ task });
 
@@ -15,7 +15,7 @@ module.exports = {
       newTask = await TaskModel.create({
         task,
         completed: 0,
-        userCreated: userID,
+        userCreated: userName,
         userDoing: ""
       });
     }
@@ -23,11 +23,39 @@ module.exports = {
     return response.json(newTask);
   },
   async delete(request, response) {
-    const { id } = request.body;
+    const { _id } = request.body;
+    const task = TaskModel.deleteOne({ _id }, (err, resp) => {
+      if (err) console.log(err);
+    });
+    // const task = await TaskModel.findById({ _id });
 
-    const task = await TaskModel.findOne({ id });
-    await TaskModel.deleteOne(task);
+    // await TaskModel.deleteOne(task);
 
-    return response.status(200).send({ message: "task deletada" });
+    return response.status(200).send({ task, message: "task deletada" });
+  },
+  async update(request, response) {
+    const { _id, userdoing, completed } = request.body;
+
+    let task = await TaskModel.findById({ _id });
+
+    if (task.userDoing) {
+      task = await TaskModel.updateOne(
+        { _id },
+        { $set: { userDoing: "", completed: 0 } },
+        (err, resp) => {
+          if (err) console.log(err);
+        }
+      );
+    } else {
+      task = await TaskModel.updateOne(
+        { _id },
+        { $set: { userDoing: userdoing, completed } },
+        (err, resp) => {
+          if (err) console.log(err);
+        }
+      );
+    }
+
+    return response.json({ task });
   }
 };
